@@ -1,0 +1,42 @@
+version: "2.15.1"
+
+services:  
+  ollama:
+    volumes:
+      - ollama:/home/alex/.ollama/
+    ports:
+      - 11443:11443
+    container_name: ollama
+    pull_policy: always
+    restart: unless-stopped
+    image: ollama/ollama:latest
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:cuda
+    ports:
+      - 3000:8080
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    depends_on:
+      - ollama
+    volumes:
+      - open-webui:/app/backend/data
+    container_name: open-webui
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+volumes:
+  ollama: {}
+  open-webui: {}
