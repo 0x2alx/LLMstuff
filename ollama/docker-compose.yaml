@@ -3,9 +3,9 @@ version: "2.15.1"
 services:  
   ollama:
     volumes:
-      - ollama:/home/alex/.ollama/
+      - /home/alex/.ollama/:/root/.ollama/
     ports:
-      - 11443:11443
+      - 11434:11434
     container_name: ollama
     pull_policy: always
     restart: unless-stopped
@@ -26,7 +26,7 @@ services:
     depends_on:
       - ollama
     volumes:
-      - open-webui:/app/backend/data
+      - /home/alex/.ollama_openwebui:/app/backend/data
     container_name: open-webui
     restart: unless-stopped
     deploy:
@@ -37,6 +37,3 @@ services:
               count: all
               capabilities: [gpu]
 
-volumes:
-  ollama: {}
-  open-webui: {}
