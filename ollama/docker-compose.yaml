@@ -5,7 +5,7 @@ services:
     volumes:
       - /home/alex/.ollama/:/root/.ollama/
     ports:
-      - 11434:11434
+      - ${BIND_ADDRESS:-127.0.0.1}:11434:11434
     container_name: ollama
     pull_policy: always
     restart: unless-stopped
@@ -20,7 +20,7 @@ services:
   open-webui:
     image: ghcr.io/open-webui/open-webui:cuda
     ports:
-      - 3000:8080
+      - ${BIND_ADDRESS:-127.0.0.1}:3000:8080
     extra_hosts:
       - host.docker.internal:host-gateway
     depends_on:
