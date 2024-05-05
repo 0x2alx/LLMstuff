@@ -9,6 +9,8 @@ services:
     container_name: ollama
     pull_policy: always
     restart: unless-stopped
+    networks:
+      - llm_docker_net
     image: ollama/ollama:latest
     deploy:
       resources:
@@ -21,14 +23,16 @@ services:
     image: ghcr.io/open-webui/open-webui:cuda
     ports:
       - ${BIND_ADDRESS:-127.0.0.1}:3000:8080
-    extra_hosts:
-      - host.docker.internal:host-gateway
     depends_on:
       - ollama
     volumes:
       - /home/alex/.ollama_openwebui:/app/backend/data
     container_name: open-webui
+    environment:
+      - 'OLLAMA_BASE_URL=http://ollama:11434'
     restart: unless-stopped
+    networks:
+      - llm_docker_net
     deploy:
       resources:
         reservations:
@@ -37,3 +41,5 @@ services:
               count: all
               capabilities: [gpu]
 
+networks:
+  llm_docker_net:
